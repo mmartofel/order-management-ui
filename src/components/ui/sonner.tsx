@@ -1,0 +1,46 @@
+"use client"
+
+import {
+  CircleCheckIcon,
+  InfoIcon,
+  Loader2Icon,
+  OctagonXIcon,
+  TriangleAlertIcon,
+} from "lucide-react"
+import { useTranslation } from "react-i18next"
+import { useTheme } from "@/components/app/theme/theme-context"
+import { Toaster as Sonner, type ToasterProps } from "sonner"
+
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme } = useTheme()
+  const { t } = useTranslation()
+
+  return (
+    <Sonner
+      theme={theme}
+      containerAriaLabel={t("common.notifications")}
+      className="toaster group"
+      // Local change: toasts sit above the app footer, which sticks to the bottom (--app-footer-height, src/index.css).
+      offset={{ bottom: "calc(var(--app-footer-height) + 24px)" }}
+      mobileOffset={{ bottom: "calc(var(--app-footer-height) + 16px)" }}
+      icons={{
+        success: <CircleCheckIcon className="size-4" />,
+        info: <InfoIcon className="size-4" />,
+        warning: <TriangleAlertIcon className="size-4" />,
+        error: <OctagonXIcon className="size-4" />,
+        loading: <Loader2Icon className="size-4 animate-spin" />,
+      }}
+      style={
+        {
+          "--normal-bg": "var(--popover)",
+          "--normal-text": "var(--popover-foreground)",
+          "--normal-border": "var(--border)",
+          "--border-radius": "var(--radius)",
+        } as React.CSSProperties
+      }
+      {...props}
+    />
+  )
+}
+
+export { Toaster }

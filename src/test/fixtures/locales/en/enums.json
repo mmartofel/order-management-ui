@@ -1,0 +1,26 @@
+{
+  "Gender": {
+    "MALE": "Male",
+    "FEMALE": "Female",
+    "OTHER": "Other"
+  },
+  "PersonStatus": {
+    "AVAILABLE": "Available",
+    "UNAVAILABLE": "Unavailable"
+  },
+  "Priority": {
+    "LOW": "Low",
+    "MEDIUM": "Medium",
+    "HIGH": "High"
+  },
+  "TaskState": {
+    "false": "Open",
+    "true": "Done"
+  },
+  "DeliveryStatus": {
+    "SCHEDULED": "Scheduled",
+    "SHIPPED": "Shipped",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled"
+  }
+}

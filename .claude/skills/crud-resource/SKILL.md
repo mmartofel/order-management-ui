@@ -1,0 +1,102 @@
+---
+name: crud-resource
+description: Adds one CRUD resource (list, detail, create/edit form, delete) to this app, or updates an existing resource after its API contract changed. Use when the user asks to "add a resource / screen / CRUD for <X>", "build the <X> screens", or says "the API changed", "new fields in <X>", "update <X> after contract:pull".
+---
+
+# crud-resource
+
+Builds or updates one resource the same way as the reference resources in
+[references/examples/](references/examples/README.md) (`persons`: a simple resource, `tasks`: relations).
+Conventions are in `CLAUDE.md`, contract rules in `docs/API-CONTRACT.md`, file-by-file wiring in
+[references/wiring.md](references/wiring.md), lessons in `docs/PATTERNS.md`.
+
+## Input
+- **Resource key**: plural, lower camel case, e.g. `orders`. It is also the route, the i18n namespace and the folder.
+- **OpenAPI tag**, e.g. `Orders`.
+
+Ask for whichever is missing. Say whether it is a **new** resource or an **existing** one (`ui-manifest.yaml` has it).
+
+## Phase A: check and draft (no code yet)
+- [ ] The contract is current: `npm run contract:pull && npm run api:generate` if the user has not done it.
+- [ ] Run the `contract-auditor` agent for the tag. If the resource is not compliant, **stop**: print the auditor's
+      API changes for the API repo. Never work around the contract in the UI. A report from this session on the same
+      contract (`git diff contract/openapi.json` empty since then) may be reused; say so.
+- [ ] **New resource:** draft the `resources.<key>` entry of `ui-manifest.yaml` with the same keys as
+      `references/examples/persons/manifest.yaml`
+      (`route`, `nav`, `display`, `permissions`, `list`, `detail`, `form`) from the contract schemas.
+- [ ] **Existing resource:** `git diff contract/openapi.json` (or `git diff <last commit touching it> -- contract/openapi.json`).
+      List added, removed and changed fields, enums, defaults, constraints, query params and error codes for the tag
+      (also shared schemas such as `FieldError`: a field becoming optional changes generic code). Other tags in the
+      same pull are out of scope; say so.
+      Draft the manifest changes: where each new field goes (list column and `mobile`, detail, form group, input,
+      filter) and which removed fields leave the manifest.
+- [ ] List the decisions the manifest cannot express yet (see PATTERNS.md section 4 "Missing") and how you propose to
+      add them generically, including new i18n key shapes. Order columns by importance and say which ones go out of
+      view at 768 px (the table scrolls inside its frame with an edge fade).
+- [ ] **STOP. Show the draft and the open decisions and wait for the user's approval.** Missing decision: ask, never guess.
+
+### A command resource
+The tag has `POST /{id}/<action>` operations and no `PUT` or `DELETE` (API-CONTRACT.md section 11; the
+`contract-auditor` says `(command resource)`). Draft it like a CRUD resource, with these differences:
+- `kind: commands`; `form` is the create form only (no `:id/edit` route, no edit page).
+- `actions:` one entry per action of the contract, `name` = the path segment. `form` lists the action body's fields
+  besides `version` (none: a confirmation only); `destructive: true` for cancel, refund and the like.
+- `display` from fields the read model always has: there is no name to show before the record is read.
+- A request body with a list of objects (an order's `lines`) is a `{ list: lines, groups: [[itemId, quantity]] }`
+  entry in `form.groups`; the response's list goes into `detail.lists` (`{ field: lines, columns: [...] }`). Labels:
+  `fields.lines.<field>` and `groups.lines`.
+
+## Phase B: build (after approval)
+- [ ] Manifest: write the approved entry; add the key to `ResourceKey` (`src/manifest/index.ts`), a new `nav.icon`
+      to `src/manifest/icons.ts` and the resource to `src/api/sources.ts`. New manifest keys: extend the types in `src/manifest/index.ts` and the generic
+      component that reads them; never branch on a resource key.
+- [ ] i18n: `src/locales/{pl,en}/<key>.json` (`title`, `newTitle`, `editTitle`, `empty`, `fields.*`, nested
+      `fields.<object>.*`, `groups.<object>`, `filters.<param>`), enum labels in `enums.json`, error codes in
+      `common.validation.*`, namespaces in `src/i18n/resources.ts`. Shared `common.*` labels must fit every resource:
+      gender-neutral in Polish. Every role in `permissions` has a `common.roles.<role>` label (locales test).
+- [ ] Feature folder `src/features/<key>/`, copied from `references/examples/persons/feature/` (or `tasks/` for a
+      resource with relations) and renamed (wiring.md). The first resource also replaces `ResourceKey = never` and
+      updates the lines marked `HOME` in `e2e/shell.spec.ts` (`/` now opens it instead of "No resources yet").
+- [ ] Routes spread into `src/router.tsx` before the `*` route.
+- [ ] A `detail.related` entry, or a test, that needs a resource not built yet waits until that resource is built
+      (the persons example names tasks in both: build persons without them, add them with tasks).
+- [ ] Unit tests for new generic code only; `src/i18n/locales.test.ts` must pass.
+- [ ] E2E `e2e/<key>.spec.ts` from `references/examples/<example>/<example>.spec.ts`: happy path plus at least one error case per changed flow
+      (filters: URL state, reload, clear, mobile sheet). Run the whole suite: new fields can break old assertions.
+      Keep the example's `expectAccessible` calls (list, form, detail, delete dialog, reader view): no serious or
+      critical axe violations.
+- [ ] `npm run contract:check` passes (generated code committed with the contract).
+
+### A command resource
+- Ids are UUIDs: `useUuidParam()` instead of `useIdParam()`.
+- Detail page: `ResourceDetail` with `commands={{ run, schemas, enumValues, onChanged }}`: one generated mutation per
+  action (`run.cancel = (data) => cancel.mutateAsync({ id, data })`), the action body schemas without `version`
+  (`CancelOrderBody.omit({ version: true })`), and `onChanged` invalidating the resource's lists. No `remove`.
+- List page: `ResourceList` without `remove` and `onDeleted` (no row menu).
+- Create page: `ResourceForm` with `save` returning the generated create's `CommandResult`; it opens the detail page,
+  which waits for the version. `onSaved` only invalidates the lists (there is no record to put into the cache).
+- Routes: list, `new` and `:id`; no `:id/edit`.
+- i18n: `actions.<name>.label` and `.text` for every action (the locales test checks them).
+- E2E: an action, the record reaching its new status, a stale version (two tabs), and an `invalid-state`.
+
+## Definition of Done (from CLAUDE.md)
+1. `npm run typecheck`, `npm run lint`, `npm test` and `npm run build` pass.
+2. The changed screens were opened with the Playwright MCP server at 375, 768 and 1440 px, logged in as the writer
+   and the reader user (`.env.local`), in every language of `app.languages`, with no console errors.
+   Each screen was compared with its `/__gallery` section (List, Detail, Form, States) at the same widths, in light
+   and dark: it must look the same (`docs/DESIGN.md`). A difference is fixed in the generic component, not the feature.
+3. The `ui-reviewer` agent reviewed the change (including its "Visual quality" section) and its findings are fixed or
+   listed for the user.
+4. E2E tests cover the changed flow (happy path plus at least one error case).
+5. README updated if commands, setup or behaviour changed.
+
+## When the API is wrong
+A flow that fails because of an API bug (not a contract gap): reproduce it through the API, stop and give the user a
+prompt for the API repo, park the e2e test with `test.fixme` naming the API version, and list it in PATTERNS.md section 3.
+After the fix: pull and regenerate (also for a version-only change), re-enable the test as a regression test.
+
+## Keep the skill true
+If a step here or in `references/wiring.md` was wrong or incomplete, fix this skill and `docs/PATTERNS.md` in the
+same session and list the fixes in the commit message. After editing this skill, run its evals
+(`evals/evals.json`, README "Skill evals"); a new kind of mistake gets a new eval. Record the resource-specific line count in PATTERNS.md
+section 2.

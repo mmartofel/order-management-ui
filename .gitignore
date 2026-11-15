@@ -1,0 +1,56 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Env (only .env.example is committed)
+.env
+.env*.local
+
+# Test output
+coverage
+playwright-report
+test-results
+blob-report
+playwright/.cache
+e2e/.auth
+reports
+
+# Claude Code personal settings
+.claude/settings.local.json
+
+# Playwright MCP output
+.playwright-mcp
+
+# skill-creator eval results and Claude Code worktrees (eval runs)
+.claude/**/*-workspace/
+.claude/worktrees/
+
+# Local registry logins and packed tarballs (never committed; .dockerignore keeps the login out of the image too)
+*.tgz
+registry-login.sh
+quay.sh
+
+# environment overlays hold one environment's hosts and secrets (docs/DEPLOY-CONVENTION.md); only the example is kept
+deploy/environments/*
+!deploy/environments/example/
