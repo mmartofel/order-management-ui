@@ -1,0 +1,12 @@
+{
+  "title": "People",
+  "newTitle": "New person",
+  "editTitle": "Edit {{name}}",
+  "empty": "No people yet.",
+  "fields": {
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone"
+  }
+}

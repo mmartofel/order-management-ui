@@ -1,0 +1,36 @@
+{
+  "title": "Payments",
+  "newTitle": "New payment",
+  "editTitle": "Edit {{name}}",
+  "empty": "No payments yet.",
+  "fields": {
+    "order": "Order",
+    "orderId": "Order",
+    "method": "Method",
+    "status": "Status",
+    "amount": "Amount",
+    "transactionReference": "Transaction reference",
+    "failureReason": "Failure reason",
+    "refundReason": "Refund reason",
+    "reason": "Reason",
+    "updatedAt": "Last changed"
+  },
+  "filters": {
+    "status": "Status",
+    "orderId": "Order"
+  },
+  "actions": {
+    "complete": {
+      "label": "Complete",
+      "text": "Record that the money arrived. The order becomes paid."
+    },
+    "fail": {
+      "label": "Mark failed",
+      "text": "Record that the payment failed. The order stays placed, so a new payment can be started."
+    },
+    "refund": {
+      "label": "Refund",
+      "text": "Refund the payment of a cancelled order."
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Items",
+  "newTitle": "New item",
+  "editTitle": "Edit {{name}}",
+  "empty": "No items yet.",
+  "fields": {
+    "sku": "SKU",
+    "name": "Name",
+    "price": "Price",
+    "description": "Description"
+  }
+}

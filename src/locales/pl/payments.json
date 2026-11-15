@@ -1,0 +1,36 @@
+{
+  "title": "Płatności",
+  "newTitle": "Nowa płatność",
+  "editTitle": "Edycja: {{name}}",
+  "empty": "Nie ma jeszcze płatności.",
+  "fields": {
+    "order": "Zamówienie",
+    "orderId": "Zamówienie",
+    "method": "Metoda",
+    "status": "Status",
+    "amount": "Kwota",
+    "transactionReference": "Numer transakcji",
+    "failureReason": "Powód niepowodzenia",
+    "refundReason": "Powód zwrotu",
+    "reason": "Powód",
+    "updatedAt": "Ostatnia zmiana"
+  },
+  "filters": {
+    "status": "Status",
+    "orderId": "Zamówienie"
+  },
+  "actions": {
+    "complete": {
+      "label": "Zatwierdź",
+      "text": "Zapisz, że pieniądze wpłynęły. Zamówienie staje się opłacone."
+    },
+    "fail": {
+      "label": "Oznacz jako nieudaną",
+      "text": "Zapisz, że płatność się nie powiodła. Zamówienie pozostaje złożone, więc można rozpocząć nową płatność."
+    },
+    "refund": {
+      "label": "Zwróć",
+      "text": "Zwróć płatność za anulowane zamówienie."
+    }
+  }
+}

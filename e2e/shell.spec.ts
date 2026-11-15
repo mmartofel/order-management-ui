@@ -4,9 +4,7 @@ import { authFile, fillLoginForm, isLoginPage, loginAs, openAs } from './support
 import { openUserMenu, switchLanguage } from './support/shell.ts'
 
 // The app shell, valid for a project without resources. When the first resource exists, `/` opens its list instead
-// of "No resources yet": update the expectations marked HOME. The first resource's route and title replace "No
-// resources yet" and `/`, and the menu sheet lists it (the persons version is in
-// .claude/skills/crud-resource/references/examples/README.md).
+// of "No resources yet". Here Orders, the first resource, is the home page.
 
 // Every distinct page and open layer gets an axe check (`expectAccessible`).
 
@@ -22,8 +20,9 @@ test.describe('app shell', () => {
   test('the writer sees the home page and the user menu, then logs out', async ({ page }) => {
     await loginAs(page, 'writer')
 
-    // HOME
-    await expect(page.getByRole('heading', { level: 1, name: 'No resources yet' })).toBeVisible()
+    // the writer's home page: the first resource
+    await expect(page).toHaveURL(/\/orders/)
+    await expect(page.getByRole('heading', { level: 1, name: 'Orders' })).toBeVisible()
     await expectAccessible(page)
     await openUserMenu(page)
     await expect(page.getByRole('menu')).toContainText('Roles')
@@ -38,11 +37,10 @@ test.describe('app shell', () => {
 
     await switchLanguage(page, 'Polski')
 
-    // HOME
-    await expect(page.getByRole('heading', { level: 1, name: 'Brak zasobów' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Zamówienia' })).toBeVisible()
     await expect(page.locator('html')).toHaveAttribute('lang', 'pl')
     await page.reload()
-    await expect(page.getByRole('heading', { level: 1, name: 'Brak zasobów' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Zamówienia' })).toBeVisible()
 
     await openUserMenu(page)
     await page.getByRole('menuitem', { name: 'Wyloguj' }).click()
@@ -57,8 +55,7 @@ test.describe('app shell', () => {
     await page.getByRole('button', { name: 'Sign in again' }).click()
     await fillLoginForm(page, 'reader')
 
-    // HOME
-    await expect(page).toHaveURL('/')
+    await expect(page).toHaveURL('/orders')
     await expect(page.getByRole('banner')).toBeVisible()
   })
 })
@@ -134,13 +131,17 @@ test.describe('app shell as reader', () => {
 
     await page.getByRole('button', { name: 'Open menu' }).click()
     const dialog = page.getByRole('dialog')
-    // HOME: no resources yet, so there is no navigation; with resources, click one and expect its route.
-    await expect(dialog.getByRole('navigation', { name: 'Main navigation' })).toHaveCount(0)
+    // the navigation lists the resources; a link closes the sheet
+    await expect(dialog.getByRole('navigation', { name: 'Main navigation' })).toBeVisible()
     await expect(dialog.getByRole('button', { name: /user menu/i })).toBeVisible()
     await expectAccessible(page, '[role=dialog]')
     await dialog.getByRole('button', { name: 'Close menu' }).click()
     await expect(dialog).toBeHidden()
     await expect(page.getByRole('button', { name: 'Open menu' })).toBeFocused()
+    await page.getByRole('button', { name: 'Open menu' }).click()
+    await page.getByRole('dialog').getByRole('link', { name: 'Payments' }).click()
+    await expect(page).toHaveURL(/\/payments/)
+    await expect(page.getByRole('dialog')).toBeHidden()
 
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth > document.documentElement.clientWidth,

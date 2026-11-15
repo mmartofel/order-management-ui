@@ -1,0 +1,12 @@
+{
+  "title": "Produkty",
+  "newTitle": "Nowy produkt",
+  "editTitle": "Edycja: {{name}}",
+  "empty": "Nie ma jeszcze produktów.",
+  "fields": {
+    "sku": "SKU",
+    "name": "Nazwa",
+    "price": "Cena",
+    "description": "Opis"
+  }
+}

@@ -1,1 +1,27 @@
-{}
+{
+  "OrderStatus": {
+    "PLACED": "Placed",
+    "PAID": "Paid",
+    "SHIPPED": "Shipped",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled"
+  },
+  "PaymentStatus": {
+    "INITIATED": "Initiated",
+    "COMPLETED": "Completed",
+    "FAILED": "Failed",
+    "REFUNDED": "Refunded"
+  },
+  "PaymentMethod": {
+    "CARD": "Card",
+    "TRANSFER": "Bank transfer",
+    "BLIK": "BLIK",
+    "CASH_ON_DELIVERY": "Cash on delivery"
+  },
+  "DeliveryStatus": {
+    "SCHEDULED": "Scheduled",
+    "SHIPPED": "Shipped",
+    "DELIVERED": "Delivered",
+    "CANCELLED": "Cancelled"
+  }
+}

@@ -11,4 +11,288 @@ app:
   languages: [en, pl]
 
 # One entry per resource, added by the crud-resource skill (crud-ui-init drafts them all for a new project).
-resources: {}
+resources:
+  # --- Command resources (docs/API-CONTRACT.md section 11): created once, then changed only through actions. ---
+  orders:
+    kind: commands
+    route: /orders
+    nav:
+      icon: shopping-cart
+      order: 1
+    display: "#{id:8}"       # an order has no name: the first 8 characters of its UUID, as the API labels it
+    permissions:
+      read: [orders-viewer, orders-editor]
+      write: [orders-editor]
+
+    list:
+      defaultSort: placedAt,desc
+      pageSize: 20
+      pageSizes: [10, 20, 50]
+      columns:
+        - { field: placedAt, sortable: true, format: date }
+        - { field: person,   format: relation, resource: persons, mobile: subtitle }
+        - { field: status,   sortable: true, format: badge, enum: OrderStatus, mobile: subtitle,
+            badge: { PLACED: info, PAID: warning, SHIPPED: warning, DELIVERED: success, CANCELLED: secondary } }
+        - { field: total,    sortable: true }
+      filters:
+        - { param: status,   input: select,   enum: OrderStatus }
+        - { param: personId, input: relation, resource: persons }
+
+    detail:
+      fields: [person, address, total, placedAt, cancelReason, updatedAt]
+      status: status
+      lists:
+        - { field: lines, columns: [sku, name, quantity, unitPrice] }
+      related:
+        - { resource: payments,   filter: orderId, limit: 5 }
+        - { resource: deliveries, filter: orderId, limit: 5 }
+
+    form:
+      groups:
+        - [personId, addressId]
+        - list: lines
+          groups:
+            - [itemId, quantity]
+      fields:
+        personId:       { input: relation, resource: persons }
+        # only the addresses of the chosen person; the API rejects another person's address anyway
+        addressId:      { input: relation, resource: addresses, filter: { personId: personId } }
+        lines.itemId:   { input: relation, resource: items }
+        lines.quantity: { input: number }
+      readOnly: [updatedAt]
+
+    actions:
+      - name: cancel
+        destructive: true
+        form:
+          groups:
+            - [reason]
+          fields:
+            reason: { input: textarea }
+
+    formats:
+      total: number
+      placedAt: dateTime
+      updatedAt: dateTime
+      lines.unitPrice: number
+
+  payments:
+    kind: commands
+    route: /payments
+    nav:
+      icon: credit-card
+      order: 2
+    display: "{method} {amount}"
+    permissions:
+      read: [orders-viewer, orders-editor]
+      write: [orders-editor]
+
+    list:
+      defaultSort: updatedAt,desc
+      pageSize: 20
+      pageSizes: [10, 20, 50]
+      columns:
+        - { field: order,  format: relation, resource: orders }
+        - { field: method, sortable: true, format: enum, enum: PaymentMethod, mobile: subtitle }
+        - { field: status, sortable: true, format: badge, enum: PaymentStatus, mobile: subtitle,
+            badge: { INITIATED: info, COMPLETED: success, FAILED: destructive, REFUNDED: secondary } }
+        - { field: amount, sortable: true }
+      filters:
+        - { param: status,  input: select,   enum: PaymentStatus }
+        - { param: orderId, input: relation, resource: orders }
+
+    detail:
+      fields: [order, method, amount, transactionReference, failureReason, refundReason, updatedAt]
+      status: status
+
+    form:
+      groups:
+        - [orderId]
+        - [amount, method]
+      fields:
+        orderId: { input: relation, resource: orders }
+        amount:  { input: number }
+        method:  { input: select, enum: PaymentMethod }
+      readOnly: [updatedAt]
+
+    actions:
+      - name: complete
+        form:
+          groups:
+            - [transactionReference]
+      - name: fail
+        destructive: true
+        form:
+          groups:
+            - [reason]
+          fields:
+            reason: { input: textarea }
+      - name: refund
+        destructive: true
+        form:
+          groups:
+            - [reason]
+          fields:
+            reason: { input: textarea }
+
+    formats:
+      amount: number
+      updatedAt: dateTime
+
+  deliveries:
+    kind: commands
+    route: /deliveries
+    nav:
+      icon: truck
+      order: 3
+    display: "{carrier} {scheduledFor}"
+    permissions:
+      read: [orders-viewer, orders-editor]
+      write: [orders-editor]
+
+    list:
+      defaultSort: scheduledFor,desc
+      pageSize: 20
+      pageSizes: [10, 20, 50]
+      columns:
+        - { field: carrier,        sortable: true }
+        - { field: order,          format: relation, resource: orders }
+        - { field: status,         sortable: true, format: badge, enum: DeliveryStatus, mobile: subtitle,
+            badge: { SCHEDULED: info, SHIPPED: warning, DELIVERED: success, CANCELLED: secondary } }
+        - { field: scheduledFor,   sortable: true, format: date, mobile: subtitle }
+        - { field: trackingNumber }
+      filters:
+        - { param: status,  input: select,   enum: DeliveryStatus }
+        - { param: orderId, input: relation, resource: orders }
+
+    detail:
+      fields: [order, address, carrier, scheduledFor, trackingNumber, cancelReason, updatedAt]
+      status: status
+
+    form:
+      groups:
+        - [orderId]
+        - [carrier, scheduledFor]
+      fields:
+        orderId:      { input: relation, resource: orders }
+        scheduledFor: { input: date }
+      readOnly: [updatedAt]
+
+    actions:
+      - name: ship
+        form:
+          groups:
+            - [trackingNumber]
+      - name: complete
+      - name: cancel
+        destructive: true
+        form:
+          groups:
+            - [reason]
+          fields:
+            reason: { input: textarea }
+
+    formats:
+      updatedAt: dateTime
+
+  # --- Reference data: CRUD resources. ---
+  persons:
+    route: /persons
+    nav:
+      icon: users
+      order: 4
+    display: "{firstName} {lastName}"
+    permissions:
+      read: [orders-viewer, orders-editor]
+      write: [orders-editor]
+
+    list:
+      defaultSort: lastName,asc
+      pageSize: 20
+      pageSizes: [10, 20, 50]
+      columns:
+        - { field: lastName,  sortable: true }
+        - { field: firstName, sortable: true }
+        - { field: email,     sortable: true, mobile: subtitle }
+        - { field: phone }
+
+    detail:
+      fields: [firstName, lastName, email, phone]
+      related:
+        - { resource: addresses, filter: personId, limit: 5 }
+        - { resource: orders,    filter: personId, limit: 5 }
+
+    form:
+      groups:
+        - [firstName, lastName]
+        - [email, phone]
+
+  addresses:
+    route: /addresses
+    nav:
+      icon: map-pin
+      order: 5
+    display: "{street}, {postalCode} {city}"
+    permissions:
+      read: [orders-viewer, orders-editor]
+      write: [orders-editor]
+
+    list:
+      defaultSort: city,asc
+      pageSize: 20
+      pageSizes: [10, 20, 50]
+      columns:
+        - { field: street,     sortable: true }
+        - { field: city,       sortable: true, mobile: subtitle }
+        - { field: postalCode, sortable: true }
+        - { field: country,    sortable: true, format: country }
+        - { field: person,     format: relation, resource: persons, mobile: subtitle }
+      filters:
+        - { param: personId, input: relation, resource: persons }
+
+    detail:
+      fields: [person, street, postalCode, city, country]
+
+    form:
+      groups:
+        - [personId]
+        - [street]
+        - [postalCode, city]
+        - [country]
+      fields:
+        personId: { input: relation, resource: persons, from: person }
+        country:  { input: country }
+
+  items:
+    route: /items
+    nav:
+      icon: package
+      order: 6
+    display: "{name}"
+    permissions:
+      read: [orders-viewer, orders-editor]
+      write: [orders-editor]
+
+    list:
+      defaultSort: name,asc
+      pageSize: 20
+      pageSizes: [10, 20, 50]
+      columns:
+        - { field: name,  sortable: true }
+        - { field: sku,   sortable: true, mobile: subtitle }
+        - { field: price, sortable: true, mobile: subtitle }
+
+    detail:
+      fields: [sku, name, price, description]
+
+    form:
+      groups:
+        - [sku, name]
+        - [price]
+        - [description]
+      fields:
+        price:       { input: number }
+        description: { input: textarea }
+
+    formats:
+      price: number

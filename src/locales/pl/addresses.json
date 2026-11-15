@@ -1,0 +1,17 @@
+{
+  "title": "Adresy",
+  "newTitle": "Nowy adres",
+  "editTitle": "Edycja: {{name}}",
+  "empty": "Nie ma jeszcze adresów.",
+  "fields": {
+    "person": "Osoba",
+    "personId": "Osoba",
+    "street": "Ulica",
+    "postalCode": "Kod pocztowy",
+    "city": "Miasto",
+    "country": "Kraj"
+  },
+  "filters": {
+    "personId": "Osoba"
+  }
+}

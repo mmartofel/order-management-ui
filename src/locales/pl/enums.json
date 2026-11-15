@@ -1,1 +1,27 @@
-{}
+{
+  "OrderStatus": {
+    "PLACED": "Złożone",
+    "PAID": "Opłacone",
+    "SHIPPED": "Wysłane",
+    "DELIVERED": "Dostarczone",
+    "CANCELLED": "Anulowane"
+  },
+  "PaymentStatus": {
+    "INITIATED": "Rozpoczęta",
+    "COMPLETED": "Zrealizowana",
+    "FAILED": "Nieudana",
+    "REFUNDED": "Zwrócona"
+  },
+  "PaymentMethod": {
+    "CARD": "Karta",
+    "TRANSFER": "Przelew",
+    "BLIK": "BLIK",
+    "CASH_ON_DELIVERY": "Za pobraniem"
+  },
+  "DeliveryStatus": {
+    "SCHEDULED": "Zaplanowana",
+    "SHIPPED": "Wysłana",
+    "DELIVERED": "Dostarczona",
+    "CANCELLED": "Anulowana"
+  }
+}

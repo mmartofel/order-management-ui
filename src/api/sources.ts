@@ -1,5 +1,11 @@
 // The generated list/get functions of each resource, by manifest key, for generic components that read a
 // resource: relation inputs and filters, embedded links, related lists and the breadcrumbs. One line per resource.
+import { getOrder, getGetOrderQueryKey, getListOrdersQueryKey, listOrders } from '@/api/generated/endpoints/orders/orders'
+import { getPayment, getGetPaymentQueryKey, getListPaymentsQueryKey, listPayments } from '@/api/generated/endpoints/payments/payments'
+import { getDelivery, getGetDeliveryQueryKey, getListDeliveriesQueryKey, listDeliveries } from '@/api/generated/endpoints/deliveries/deliveries'
+import { getPerson, getGetPersonQueryKey, getListPersonsQueryKey, listPersons } from '@/api/generated/endpoints/persons/persons'
+import { getAddress, getGetAddressQueryKey, getListAddressesQueryKey, listAddresses } from '@/api/generated/endpoints/addresses/addresses'
+import { getItem, getGetItemQueryKey, getListItemsQueryKey, listItems } from '@/api/generated/endpoints/items/items'
 import type { RecordId } from '@/lib/ids'
 import type { ResourceKey } from '@/manifest'
 
@@ -20,7 +26,14 @@ export interface ResourceSource {
 
 // One line per resource, e.g. (imports from '@/api/generated/endpoints/orders/orders'):
 //   orders: { list: listOrders, get: getOrder, listKey: getListOrdersQueryKey, getKey: getGetOrderQueryKey },
-export const sources: Record<ResourceKey, ResourceSource> = {}
+export const sources: Record<ResourceKey, ResourceSource> = {
+  orders: { list: listOrders, get: getOrder, listKey: getListOrdersQueryKey, getKey: getGetOrderQueryKey },
+  payments: { list: listPayments, get: getPayment, listKey: getListPaymentsQueryKey, getKey: getGetPaymentQueryKey },
+  deliveries: { list: listDeliveries, get: getDelivery, listKey: getListDeliveriesQueryKey, getKey: getGetDeliveryQueryKey },
+  persons: { list: listPersons, get: getPerson, listKey: getListPersonsQueryKey, getKey: getGetPersonQueryKey },
+  addresses: { list: listAddresses, get: getAddress, listKey: getListAddressesQueryKey, getKey: getGetAddressQueryKey },
+  items: { list: listItems, get: getItem, listKey: getListItemsQueryKey, getKey: getGetItemQueryKey },
+}
 
 /** The registered source of a resource; every resource must be in `sources`. */
 export function sourceOf(resource: ResourceKey): ResourceSource {
