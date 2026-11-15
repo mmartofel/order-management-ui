@@ -3,9 +3,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: crud-ui-blueprint
+  name: order-management-ui
   labels:
-    app.kubernetes.io/name: crud-ui-blueprint
+    app.kubernetes.io/name: order-management-ui
     app.kubernetes.io/component: frontend
     app.kubernetes.io/part-of: my-app
 spec:
@@ -16,6 +16,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: crud-ui-blueprint
+                name: order-management-ui
                 port:
                   number: 8080

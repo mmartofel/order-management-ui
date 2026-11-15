@@ -3,9 +3,9 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: crud-ui-blueprint
+  name: order-management-ui
   labels:
-    app.kubernetes.io/name: crud-ui-blueprint
+    app.kubernetes.io/name: order-management-ui
     app.kubernetes.io/component: frontend
     app.kubernetes.io/part-of: my-app
   annotations:
@@ -13,7 +13,7 @@ metadata:
 spec:
   to:
     kind: Service
-    name: crud-ui-blueprint
+    name: order-management-ui
   port:
     targetPort: 8080
   tls:

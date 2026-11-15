@@ -1,28 +1,10 @@
-# CRUD UI blueprint
+# Order Management UI
 
-A GitHub template for a CRUD web UI on top of any REST API that follows [docs/API-CONTRACT.md](docs/API-CONTRACT.md).
-You describe each screen in `ui-manifest.yaml`; Claude Code builds it with the skills in `.claude/`, the same way
-every time, from the API's OpenAPI contract. It was extracted from Person UI
-([`spring-person-ui-claude`](https://github.com/mmartofel/spring-person-ui-claude)), whose two resources are kept as
-reference examples in `.claude/skills/crud-resource/references/examples/`.
-
-What you get without writing a screen:
-- sign-in with OIDC (Keycloak; Authorization Code + PKCE), roles from the token, actions hidden by role;
-- a responsive shell (sidebar from `lg`, collapsible to icons with Ctrl/⌘+B, a sheet menu below; breadcrumbs; a user
-  menu with language and theme), light/dark theme, languages from the manifest (PL and EN included);
-- lists with search, sorting, paging and filters kept in the URL (active filters as removable chips), table from `md`
-  with a sticky header and cards below, a row menu (view, edit, delete) for writers;
-- detail pages (status badge in the header, fields in section cards), create/edit forms in section cards validated
-  with the contract's Zod schemas, server field errors on the fields, stale-version reload, unsaved-changes guard,
-  delete with confirmation, relations between resources;
-- a calm, themable look: one file of design tokens (`src/styles/theme.css`, light and dark), Inter, rules in
-  [docs/DESIGN.md](docs/DESIGN.md), and a component gallery at `/__gallery` in the dev server (no API or login needed);
-- unit tests (Vitest) for all of that, e2e tests (Playwright) for the shell and the gallery, CircleCI;
-- a production image (nginx, configured at container start, `/api` and sign-in proxied, CSP), and Skaffold with
-  kustomize overlays for a local cluster, OpenShift and Kubernetes (`docs/DEPLOY-CONVENTION.md`).
-
-Stack: Vite, React, TypeScript (strict), React Router, Tailwind CSS v4, shadcn/ui, TanStack Query and Table, React
-Hook Form + Zod, orval, i18next, Vitest + Testing Library, Playwright.
+Web UI for [order-management-cqrs-api](https://github.com/mmartofel/order-management-cqrs-api): people, addresses
+and items (CRUD), and orders, payments and deliveries, which are command resources: created once, then changed only
+through actions (cancel, complete, ship, ...), with reads that are eventually consistent. Every screen is generated
+from the API's OpenAPI contract (`contract/openapi.json`) and `ui-manifest.yaml`, made from the
+[crud-ui-blueprint](https://github.com/mmartofel/crud-ui-blueprint) template.
 
 ## Prerequisites
 - Node.js 24+ and npm 11+, [Claude Code](https://claude.com/claude-code), the GitHub CLI (`gh`).

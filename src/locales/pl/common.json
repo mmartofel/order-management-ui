@@ -85,7 +85,10 @@
   },
   "notifications": "Powiadomienia",
   "documentTitle": "{{page}} – {{app}}",
-  "roles": {},
+  "roles": {
+    "orders-viewer": "Przeglądający",
+    "orders-editor": "Edytujący"
+  },
   "list": {
     "search": "Szukaj",
     "searchPlaceholder": "Szukaj…",

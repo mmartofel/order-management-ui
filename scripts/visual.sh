@@ -13,7 +13,7 @@ engine=${CONTAINER_ENGINE:-$(command -v docker >/dev/null && echo docker || echo
 # node_modules lives in a named volume: the host's (macOS) native binaries of Vite, esbuild and Tailwind do not run
 # on Linux. `npm ci` keeps it in step with package-lock.json.
 exec "$engine" run --rm --init --ipc=host \
-  -v "$PWD":/work -v crud-ui-blueprint-node-modules:/work/node_modules -w /work \
+  -v "$PWD":/work -v order-management-ui-node-modules:/work/node_modules -w /work \
   -e VISUAL=1 -e CI=1 \
   "$image" \
   bash -c 'npm ci --no-audit --no-fund --loglevel=error && npx playwright test --project=visual --workers=2 "$@"' bash "$@"

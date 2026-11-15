@@ -1,32 +1,32 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: crud-ui-blueprint
+  name: order-management-ui
   labels:
-    app.kubernetes.io/name: crud-ui-blueprint
+    app.kubernetes.io/name: order-management-ui
     app.kubernetes.io/component: frontend
     app.kubernetes.io/part-of: my-app
 spec:
   selector:
     matchLabels:
-      app: crud-ui-blueprint
+      app: order-management-ui
   template:
     metadata:
       labels:
-        app: crud-ui-blueprint
+        app: order-management-ui
     spec:
       securityContext:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: crud-ui-blueprint
-          image: crud-ui-blueprint
+        - name: order-management-ui
+          image: order-management-ui
           ports:
             - containerPort: 8080
           envFrom:
             - configMapRef:
-                name: crud-ui-blueprint-config
+                name: order-management-ui-config
           readinessProbe:
             httpGet:
               path: /healthz
@@ -61,13 +61,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: crud-ui-blueprint
+  name: order-management-ui
   labels:
-    app.kubernetes.io/name: crud-ui-blueprint
+    app.kubernetes.io/name: order-management-ui
     app.kubernetes.io/component: frontend
     app.kubernetes.io/part-of: my-app
 spec:
   selector:
-    app: crud-ui-blueprint
+    app: order-management-ui
   ports:
     - port: 8080

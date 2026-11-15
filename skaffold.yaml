@@ -7,10 +7,10 @@
 apiVersion: skaffold/v4beta13
 kind: Config
 metadata:
-  name: crud-ui-blueprint
+  name: order-management-ui
 build:
   artifacts:
-    - image: crud-ui-blueprint
+    - image: order-management-ui
       # docker or podman, whichever is installed (deploy/build-image.sh); no daemon socket setup needed.
       custom:
         buildCommand: sh deploy/build-image.sh
@@ -28,7 +28,7 @@ deploy:
 portForward:
   # The realm accepts redirects to localhost:5173, the dev server's port.
   - resourceType: service
-    resourceName: crud-ui-blueprint
+    resourceName: order-management-ui
     port: 8080
     localPort: 5173
 profiles:

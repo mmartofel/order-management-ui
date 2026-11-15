@@ -85,7 +85,10 @@
   },
   "notifications": "Notifications",
   "documentTitle": "{{page}} – {{app}}",
-  "roles": {},
+  "roles": {
+    "orders-viewer": "Viewer",
+    "orders-editor": "Editor"
+  },
   "list": {
     "search": "Search",
     "searchPlaceholder": "Search…",

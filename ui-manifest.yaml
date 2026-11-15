@@ -5,10 +5,10 @@
 
 app:
   # Shown in the sidebar (with its initials as the app mark), the browser tab (<title>) and every page title.
-  name: CRUD UI
+  name: Order Management
   # Languages offered by the switcher; the first one is the default and the fallback.
   # Each needs src/locales/<lang>/ and a line in src/i18n/resources.ts.
-  languages: [pl, en]
+  languages: [en, pl]
 
 # One entry per resource, added by the crud-resource skill (crud-ui-init drafts them all for a new project).
 resources: {}

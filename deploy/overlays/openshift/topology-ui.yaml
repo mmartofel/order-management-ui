@@ -4,11 +4,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: crud-ui-blueprint
+  name: order-management-ui
   labels:
     app.openshift.io/runtime: nginx
   annotations:
     app.openshift.io/connects-to: >-
-      [{"apiVersion":"apps/v1","kind":"Deployment","name":"my-api"},
+      [{"apiVersion":"apps/v1","kind":"Deployment","name":"order-management"},
       {"apiVersion":"apps/v1","kind":"Deployment","name":"keycloak"}]
-    app.openshift.io/vcs-uri: https://github.com/mmartofel/crud-ui-blueprint
+    app.openshift.io/vcs-uri: https://github.com/mmartofel/order-management-ui
