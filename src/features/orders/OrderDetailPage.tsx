@@ -31,7 +31,7 @@ function OrderDetail({ id }: { id: string }) {
       query={query}
       commands={{
         run: {
-      cancel: (data) => cancel.mutateAsync({ id, data }),
+          cancel: (data) => cancel.mutateAsync({ id, data }),
         },
         schemas,
         // The detail page reads the record until it reaches the command's version; lists are refetched.
