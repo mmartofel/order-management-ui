@@ -97,6 +97,7 @@ resources:
         - { field: status, sortable: true, format: badge, enum: PaymentStatus, mobile: subtitle,
             badge: { INITIATED: info, COMPLETED: success, FAILED: destructive, REFUNDED: secondary } }
         - { field: amount, sortable: true }
+        - { field: updatedAt, sortable: true, format: date }
       filters:
         - { param: status,  input: select,   enum: PaymentStatus }
         - { param: orderId, input: relation, resource: orders }
