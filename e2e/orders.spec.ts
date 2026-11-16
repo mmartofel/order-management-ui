@@ -113,6 +113,9 @@ test.describe('orders as writer', () => {
     await expect(lines).toContainText(customer.itemName)
     await expect(lines).toContainText('3')
     await expect(page.getByRole('button', { name: 'Cancel order' })).toBeVisible()
+    // the customer and the delivery address are references that link to their records
+    await expect(page.getByRole('link', { name: new RegExp(customer.lastName) })).toHaveAttribute('href', `/persons/${customer.personId}`)
+    await expect(page.getByRole('link', { name: /Prosta/ })).toHaveAttribute('href', `/addresses/${customer.addressId}`)
     await expectAccessible(page)
 
     // Pay: a payment for the order, then the Complete action.

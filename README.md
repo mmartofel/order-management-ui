@@ -108,6 +108,7 @@ Keycloak is set up the same way for every API (realm roles `<realm>-viewer` and 
 | `npm run lint` | ESLint |
 | `npm test` | Vitest |
 | `npm run e2e` | Playwright (needs the API and the OIDC provider running, users from `.env.local`) |
+| `npx playwright test read-side-down --project=desktop` | Opt-in: "still processing" with the query service stopped; set `E2E_READ_SIDE_STOP` and `E2E_READ_SIDE_START` (see the spec) |
 | `npx playwright test --project=gallery` | Only the component gallery tests, with axe (no API, OIDC or `.env.local`) |
 | `npm run test:visual` | Gallery screenshot tests in the Playwright Docker image (see Visual regression) |
 | `npm run test:visual:update` | Regenerate the screenshot baselines in that image |
