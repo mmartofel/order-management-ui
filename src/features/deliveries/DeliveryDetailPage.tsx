@@ -35,9 +35,9 @@ function DeliveryDetail({ id }: { id: string }) {
       query={query}
       commands={{
         run: {
-      ship: (data) => ship.mutateAsync({ id, data }),
-      complete: (data) => complete.mutateAsync({ id, data }),
-      cancel: (data) => cancel.mutateAsync({ id, data }),
+          ship: (data) => ship.mutateAsync({ id, data }),
+          complete: (data) => complete.mutateAsync({ id, data }),
+          cancel: (data) => cancel.mutateAsync({ id, data }),
         },
         schemas,
         // The detail page reads the record until it reaches the command's version; lists are refetched.

@@ -35,9 +35,9 @@ function PaymentDetail({ id }: { id: string }) {
       query={query}
       commands={{
         run: {
-      complete: (data) => complete.mutateAsync({ id, data }),
-      fail: (data) => fail.mutateAsync({ id, data }),
-      refund: (data) => refund.mutateAsync({ id, data }),
+          complete: (data) => complete.mutateAsync({ id, data }),
+          fail: (data) => fail.mutateAsync({ id, data }),
+          refund: (data) => refund.mutateAsync({ id, data }),
         },
         schemas,
         // The detail page reads the record until it reaches the command's version; lists are refetched.
