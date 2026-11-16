@@ -54,9 +54,10 @@ resources:
           groups:
             - [itemId, quantity]
       fields:
-        personId:       { input: relation, resource: persons }
+        # from: the embedded reference the detail page shows (and links) for the relation
+        personId:       { input: relation, resource: persons, from: person }
         # only the addresses of the chosen person; the API rejects another person's address anyway
-        addressId:      { input: relation, resource: addresses, filter: { personId: personId } }
+        addressId:      { input: relation, resource: addresses, from: address, filter: { personId: personId } }
         lines.itemId:   { input: relation, resource: items }
         lines.quantity: { input: number }
       readOnly: [updatedAt]
