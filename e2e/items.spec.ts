@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { expectAccessible } from './support/a11y.ts'
-import { authFile, openAs } from './support/auth.ts'
+import { appOrigin, authFile, openAs } from './support/auth.ts'
 import { callApi, deleteViaApi, unique } from './support/data.ts'
 
 // Items are reference data with a price and a unique SKU. Records each test creates are deleted afterwards.
@@ -12,7 +12,7 @@ test.beforeEach(() => {
 })
 
 test.afterEach(async ({ page }) => {
-  if (created.length && !page.url().startsWith('http://localhost:5173')) await openAs(page)
+  if (created.length && !page.url().startsWith(appOrigin)) await openAs(page)
   for (const url of created.toReversed()) await deleteViaApi(page, url)
 })
 
